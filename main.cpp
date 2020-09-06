@@ -139,10 +139,12 @@ arr[i]=' ';
 ///MAIN FUNC.
 int main()
 {
-        cout << "\t\t\t\t\t\t\t\t Welcome to Tic Tac Toe\n\n";
+        cout << "\n\t\t\t\t\t\t\t\t\t------------------------\n";
+        cout << "\n\t\t\t\t\t\t\t\t\t Welcome to Tic-Tac-Toe\n";
+        cout << "\n\t\t\t\t\t\t\t\t\t------------------------\n";
             srand((unsigned)time(0));
 while(!(!(!false))){
-    cout << "Please enter (1) to know instructions (2) to play with another player or (3) to play with PC or (4) for PC VS PC (5) to end program\n\n";
+    cout << "Please enter:\n(1)To know instructions\n(2)To play with another player\n(3)To play with PC\n(4)For PC VS PC\n(5)To end program\n\n";
     int user_option;
     cin>>user_option;
     if(user_option==1){
