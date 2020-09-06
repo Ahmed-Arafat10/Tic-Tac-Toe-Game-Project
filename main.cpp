@@ -381,7 +381,7 @@ break;
     if(Winner == "user"){
             cout<<"You will start first\n\n";
             USER_SIGN_AGAIN:
-            cout<<"Please choice (X)/(O)\n\n";
+            cout<<"Please choose (X)/(O)\n\n";
             cin>>user_sign;
             if(user_sign=='X') pc_sign='O';
              else if(user_sign=='O') pc_sign='X';
