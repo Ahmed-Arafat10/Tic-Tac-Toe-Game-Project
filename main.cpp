@@ -167,7 +167,7 @@ while(!(!(!false))){
      if(turn==1) {
          cout<<"Player1 will start\n\n";
            PLAYER1_SIGN_AGAIN:
-            cout<<"Please choice (X)/(O)\n\n";
+            cout<<"Please choose (X)/(O)\n\n";
             cin>>player1_sign;
             if(player1_sign=='X') player2_sign='O';
              else if(player1_sign=='O') player2_sign='X';
@@ -180,7 +180,7 @@ while(!(!(!false))){
        if(turn==2){
            cout<<"Player2 will start\n\n";
              PLAYER2_SIGN_AGAIN:
-            cout<<"Please choice (X)/(O)\n\n";
+            cout<<"Please choose (X)/(O)\n\n";
             cin>>player2_sign;
             if(player2_sign=='X') player1_sign='O';
              else if(player2_sign=='O') player1_sign='X';
