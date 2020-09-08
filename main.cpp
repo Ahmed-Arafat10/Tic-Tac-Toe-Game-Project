@@ -78,6 +78,10 @@ bool change_cell(int c,char sign){
 board[c]=sign;
 board_cell[ c ]++;
 }
+bool undo_cell(int c,char sign){
+board[c]=sign;
+board_cell[ c ]--;
+}
 void print_board(){
     cout<<"\nBoard\n";
  for(int i=1;i<=9;i++){
@@ -127,6 +131,42 @@ if(board[2]==sign&&board[5]==sign&&board[8]==sign){
 }
 if(board[3]==sign&&board[5]==sign&&board[7]==sign){
     cout<<name<<" is the winner\n\n";
+    return 1;
+}
+return 0;
+}
+bool check_winner(char sign){
+
+if(board[1]==sign&&board[2]==sign&&board[3]==sign){
+   // cout<<name<<" is the winner\n\n";
+    return 1;
+}
+if(board[1]==sign&&board[4]==sign&&board[7]==sign){
+   // cout<<name<<" is the winner\n\n";
+    return 1;
+}
+if(board[1]==sign&&board[5]==sign&&board[9]==sign){
+   // cout<<name<<" is the winner\n\n";
+    return 1;
+}
+if(board[7]==sign&&board[8]==sign&&board[9]==sign){
+   // cout<<name<<" is the winner\n\n";
+    return 1;
+}
+if(board[3]==sign&&board[6]==sign&&board[9]==sign){
+   // cout<<name<<" is the winner\n\n";
+    return 1;
+}
+if(board[4]==sign&&board[5]==sign&&board[6]==sign){
+  //  cout<<name<<" is the winner\n\n";
+    return 1;
+}
+if(board[2]==sign&&board[5]==sign&&board[8]==sign){
+  //  cout<<name<<" is the winner\n\n";
+    return 1;
+}
+if(board[3]==sign&&board[5]==sign&&board[7]==sign){
+   // cout<<name<<" is the winner\n\n";
     return 1;
 }
 return 0;
@@ -408,6 +448,21 @@ break;
                }
         who_will_start=false;
         }
+        bool easy_or_hard;
+        LVL_AGAIN:
+        cout<<"Please (e) for easy level or (h) for hard level\n\n";
+        char lvl;
+        cin>>lvl;
+        if(lvl=='e'){
+            easy_or_hard=false;
+        }
+        else if(lvl=='h'){
+             easy_or_hard=true;
+        }
+        else {
+             cout<<"Please make sure that you entered (e) or (h)\n\n";
+                goto LVL_AGAIN;
+        }
 while(1){
         ///PLAYER
         if(who_will_start){
@@ -443,6 +498,28 @@ while(1){
         }
         ///PC
        if(!who_will_start){
+            bool good_turn=false;
+            if(cnt_user>=2&&easy_or_hard){
+                for(int i=1;i<=9;i++){
+                   if(!check_cell(i)){
+                    change_cell(i,user_sign);
+                    if(check_winner(user_sign)){
+                            undo_cell(i,' ');
+                        change_cell(i,pc_sign);
+                        print_board();
+                        cnt_turns++,cnt_pc++;
+                good_turn=true;
+                    break;
+                    }
+                    else{
+                        undo_cell(i,' ');
+                    }
+                   }
+
+                }
+
+            }
+            if(!good_turn){
            HERE3:
         srand((unsigned)time(0));
         int PC_cell=1+(rand()%9);
@@ -452,6 +529,7 @@ while(1){
         change_cell(PC_cell,pc_sign);
         print_board();
         cnt_pc++;
+            }
         if(cnt_pc>=3){
             if(check_winner("PC",pc_sign)){
                     cout<<"Hard Luck\n\n";
@@ -559,3 +637,4 @@ cnt_pc1=0,cnt_pc2=0,cnt_turns=0;
 }
     return 0;
 }
+
