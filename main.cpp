@@ -519,7 +519,7 @@ while(1){
         }
         ///PC
        if(!who_will_start){
-         //   print_wait();
+            print_wait();
             bool good_turn=false,enough=false;
             if(cnt_pc>=2&&easy_or_hard){
                 for(int i=1;i<=9;i++){
