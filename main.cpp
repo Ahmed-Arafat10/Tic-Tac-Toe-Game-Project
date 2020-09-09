@@ -63,12 +63,18 @@ int diry[8] = { 0, 1, -1, 0, -1, 1, -1, 1 };
 #define pn                  printf("\n")
 #define debug               printf("I am here\n")
 #define ps                  printf(" ")
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#include <unistd.h>
+#endif
 using namespace std;
 mpll board_cell;
 char board[10];
 char R_P_S[4]={'-','R','P','S'};
 int cnt_user=0,cnt_pc=0,cnt_turns=0,cnt_player1=0,cnt_player2=0,cnt_pc1=0,cnt_pc2=0;
     char user_sign,pc_sign,player1_sign,player2_sign,pc1_sign,pc2_sign;
+    int edge[6]={0,1,3,5,7,9};
 bool check_cell(int c){
 if(board_cell[ c ]==0)
    return 0;
@@ -175,6 +181,21 @@ void rest_board(char arr[]){
 for(int i=0;i<=9;i++)
 arr[i]=' ';
 }
+void print_wait(){
+    cout << "\nPlease wait";
+    for(int i=1;i<=3;i++)
+    {
+Sleep(600);
+cout<<".";
+    }
+    cout<<"\n\n";
+    }
+
+    bool check_edges(){
+    if(board_cell[1]==1&&board_cell[3]==1&&board_cell[5]==1&&board_cell[7]==1&&board_cell[9]==1)
+        return 0;
+    return 1;
+    }
 
 ///MAIN FUNC.
 int main()
@@ -498,28 +519,60 @@ while(1){
         }
         ///PC
        if(!who_will_start){
-            bool good_turn=false;
-            if(cnt_user>=2&&easy_or_hard){
+         //   print_wait();
+            bool good_turn=false,enough=false;
+            if(cnt_pc>=2&&easy_or_hard){
                 for(int i=1;i<=9;i++){
+                   if(!check_cell(i)){
+                     change_cell(i,pc_sign);
+                   if(check_winner(pc_sign)){
+                        print_board();
+                    cnt_turns++,cnt_pc++;
+                good_turn=true,enough=true;
+                        break;
+                    }
+                    else{
+                        undo_cell(i,' ');
+                    }
+                   }
+                }
+           }
+           if(!enough&&easy_or_hard){
+            if(cnt_user>=2&&easy_or_hard){
+                    for(int i=1;i<=9;i++){
                    if(!check_cell(i)){
                     change_cell(i,user_sign);
                     if(check_winner(user_sign)){
-                            undo_cell(i,' ');
+                        undo_cell(i,' ');
                         change_cell(i,pc_sign);
                         print_board();
                         cnt_turns++,cnt_pc++;
-                good_turn=true;
+                good_turn=true,enough=true;
                     break;
                     }
                     else{
                         undo_cell(i,' ');
                     }
                    }
-
                 }
-
             }
+           }
+           if(!enough){
+            if(check_edges()){
+                     EDGE:
+                int e=1+(rand()%5);
+                 if(!check_cell(edge[e])){
+                    change_cell(edge[e],pc_sign);
+                        print_board();
+                        cnt_turns++,cnt_pc++;
+                        who_will_start=true;
+                 }
+                 else
+                    goto EDGE;
+            }
+            else{
             if(!good_turn){
+            //cout<<"HERE";
            HERE3:
         srand((unsigned)time(0));
         int PC_cell=1+(rand()%9);
@@ -530,6 +583,8 @@ while(1){
         print_board();
         cnt_pc++;
             }
+            }
+           }
         if(cnt_pc>=3){
             if(check_winner("PC",pc_sign)){
                     cout<<"Hard Luck\n\n";
@@ -565,6 +620,61 @@ cnt_user=0,cnt_pc=0,cnt_turns=0;
      while(1){
             ///PC1
              if(pc_turn){
+print_wait();
+        ///START
+ bool good_turn=false,enough=false;
+            if(cnt_pc1>=2){
+                for(int i=1;i<=9;i++){
+                   if(!check_cell(i)){
+                     change_cell(i,pc1_sign);
+                   if(check_winner(pc1_sign)){
+                        print_board();
+                    cnt_turns++,cnt_pc1++;
+                good_turn=true,enough=true;
+                        break;
+                    }
+                    else{
+                        undo_cell(i,' ');
+                    }
+                   }
+                }
+           }
+           if(!enough){
+            if(cnt_pc2>=2){
+                    for(int i=1;i<=9;i++){
+                   if(!check_cell(i)){
+                    change_cell(i,pc2_sign);
+                    if(check_winner(pc2_sign)){
+                        undo_cell(i,' ');
+                        change_cell(i,pc1_sign);
+                        print_board();
+                        cnt_turns++,cnt_pc1++;
+                good_turn=true,enough=true;
+                    break;
+                    }
+                    else{
+                        undo_cell(i,' ');
+                    }
+                   }
+                }
+            }
+           }
+           if(!enough){
+            if(check_edges()){
+                     EDGE_PC1:
+                int e=1+(rand()%5);
+                 if(!check_cell(edge[e])){
+                    change_cell(edge[e],pc1_sign);
+                        print_board();
+                        cnt_turns++,cnt_pc1++;
+                        pc_turn=false;
+                 }
+                 else
+                    goto EDGE_PC1;
+            }
+            else{
+            if(!good_turn){
+            //cout<<"HERE";
            PC1:
         srand((unsigned)time(0));
         int PC_cell=1+(rand()%9);
@@ -574,6 +684,11 @@ cnt_user=0,cnt_pc=0,cnt_turns=0;
         change_cell(PC_cell,pc1_sign);
         print_board();
         cnt_pc1++;
+            }
+            }
+           }
+        ///END
+
         if(cnt_pc1>=3){
             if(check_winner("PC1",pc1_sign)){
                    // cout<<"PC2 IS THE WINNER\n\n";
@@ -588,15 +703,74 @@ cnt_user=0,cnt_pc=0,cnt_turns=0;
        }
        ///PC2
            if(!pc_turn){
+print_wait();
+        ///START
+bool good_turn=false,enough=false;
+            if(cnt_pc2>=2){
+                for(int i=1;i<=9;i++){
+                   if(!check_cell(i)){
+                     change_cell(i,pc2_sign);
+                   if(check_winner(pc2_sign)){
+                        print_board();
+                    cnt_turns++,cnt_pc2++;
+                good_turn=true,enough=true;
+                        break;
+                    }
+                    else{
+                        undo_cell(i,' ');
+                    }
+                   }
+                }
+           }
+           if(!enough){
+            if(cnt_pc1>=2){
+                    for(int i=1;i<=9;i++){
+                   if(!check_cell(i)){
+                    change_cell(i,pc1_sign);
+                    if(check_winner(pc1_sign)){
+                        undo_cell(i,' ');
+                        change_cell(i,pc2_sign);
+                        print_board();
+                        cnt_turns++,cnt_pc2++;
+                good_turn=true,enough=true;
+                    break;
+                    }
+                    else{
+                        undo_cell(i,' ');
+                    }
+                   }
+                }
+            }
+           }
+           if(!enough){
+            if(check_edges()){
+                     EDGE_PC2:
+                int e=1+(rand()%5);
+                 if(!check_cell(edge[e])){
+                    change_cell(edge[e],pc2_sign);
+                        print_board();
+                        cnt_turns++,cnt_pc2++;
+                        pc_turn=true;
+                 }
+                 else
+                    goto EDGE_PC2;
+            }
+            else{
+            if(!good_turn){
+            //cout<<"HERE";
            PC2:
         srand((unsigned)time(0));
         int PC_cell=1+(rand()%9);
       if(check_cell(PC_cell))
         goto PC2;
-        cnt_turns++;
+            cnt_turns++;
         change_cell(PC_cell,pc2_sign);
         print_board();
         cnt_pc2++;
+            }
+            }
+           }
+        ///END
         if(cnt_pc2>=3){
             if(check_winner("PC2",pc2_sign)){
                   //  cout<<"PC2 IS THE WINNER\n\n";
@@ -637,4 +811,3 @@ cnt_pc1=0,cnt_pc2=0,cnt_turns=0;
 }
     return 0;
 }
-
